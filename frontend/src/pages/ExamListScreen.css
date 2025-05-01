@@ -1,0 +1,53 @@
+.exam-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #eefaf1;
+  font-family: Arial, sans-serif;
+}
+
+.exam-list {
+  flex-grow: 1;
+  padding: 120px;
+}
+
+.exam-item {
+  background: white;
+  border-left: 3px solid #267c5a;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+.exam-info p {
+  margin: 0;
+  color: #666;
+}
+
+.delete-button {
+  background-color: 	#F28B82;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.delete-button:hover {
+  background-color: 	#FF0000;
+}
+
+.create-button {
+  background-color: #267c5a;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+  margin-top: 10px;
+}
