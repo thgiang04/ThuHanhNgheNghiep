@@ -8,6 +8,8 @@ import FooterGV from "./FooterGV";
 const CreateTestScreen = () => {
   const [title, setTitle] = useState("");
   const [totalTime, setTotalTime] = useState(60);
+  const [startTime, setStartTime] = useState(""); // Thêm trường startTime
+  const [endTime, setEndTime] = useState(""); // Thêm trường endTime
   const [questions, setQuestions] = useState([
     {
       content: "",
@@ -51,17 +53,19 @@ const CreateTestScreen = () => {
 
   const handleCreateTest = async () => {
     if (!title.trim()) return alert("Vui lòng nhập tên bài kiểm tra.");
+    if (!startTime || !endTime)
+      return alert("Vui lòng nhập thời gian bắt đầu và kết thúc.");
 
     try {
-      // Bước 1: tạo bài kiểm tra
       const res = await axios.post("http://localhost:3000/api/exam", {
         title,
         duration: totalTime,
+        startTime, // Gửi startTime
+        endTime, // Gửi endTime
       });
 
       const examId = res.data._id;
 
-      // Bước 2: gửi từng câu hỏi
       for (const q of questions) {
         await axios.post(`http://localhost:3000/api/exam/${examId}/question`, {
           content: q.content,
@@ -102,6 +106,26 @@ const CreateTestScreen = () => {
                   min="1"
                   value={totalTime}
                   onChange={(e) => setTotalTime(parseInt(e.target.value) || 1)}
+                />
+              </label>
+            </div>
+            <div className="time-setting">
+              <label>
+                Thời gian bắt đầu:
+                <input
+                  type="datetime-local"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                />
+              </label>
+            </div>
+            <div className="time-setting">
+              <label>
+                Thời gian kết thúc:
+                <input
+                  type="datetime-local"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
                 />
               </label>
             </div>

@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; 
-import './Navbar.css';
-import userIcon from '../assets/user.png';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
+import userIcon from "../assets/user.png";
 
 const Navbar = () => {
   return (
@@ -9,7 +9,7 @@ const Navbar = () => {
       <div className="navbar-content">
         <h1 className="navbar-logo">ThinkFast</h1>
         <div className="navbar-buttons">
-          <Link to="/user" className="user-button"> 
+          <Link to="/user" className="user-button">
             <img src={userIcon} alt="User Icon" className="user-icon" />
           </Link>
         </div>

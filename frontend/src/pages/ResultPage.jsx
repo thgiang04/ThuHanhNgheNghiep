@@ -1,9 +1,9 @@
-import React from 'react';
-import './ResultPage.css';
-import Navbar2 from './Navbar2';
-import Footer from './Footer';
-import { useLocation, useNavigate } from 'react-router-dom';
-import bgImage from '../assets/bg3.png';
+import React from "react";
+import "./ResultPage.css";
+import Navbar2 from "./Navbar2";
+import Footer from "./Footer";
+import { useLocation, useNavigate } from "react-router-dom";
+import bgImage from "../assets/bg3.png";
 
 const ResultPage = () => {
   const navigate = useNavigate();
@@ -22,25 +22,40 @@ const ResultPage = () => {
     <>
       <Navbar2 />
       <div className="result-page">
-        <img 
-          src={bgImage} 
-          alt="background" 
-          className="background-image"
-        />
+        <img src={bgImage} alt="background" className="background-image" />
         <div className="result-content">
           <h2 className="sub-title">Bài kiểm tra thường xuyên</h2>
-          <p className="test-code">Mã bài kiểm tra: <strong>#123456</strong></p>
+          <p className="test-code">
+            Mã bài kiểm tra: <strong>#123456</strong>
+          </p>
           <div className="congrats">
-            {'Chúc mừng bạn đã hoàn thành\nbài kiểm tra!'.split('\n').map((item, index) => (
-              <span key={index}>{item}<br/></span>
-            ))}
+            {"Chúc mừng bạn đã hoàn thành\nbài kiểm tra!"
+              .split("\n")
+              .map((item, index) => (
+                <span key={index}>
+                  {item}
+                  <br />
+                </span>
+              ))}
           </div>
 
           <div className="score-box">
-            <p>Điểm của bạn: <strong>{score}/{total}</strong></p>
-            <p>Tỷ lệ đúng: <strong>{((score / total) * 100).toFixed(1)}%</strong></p>
-            <p>Thời gian hoàn thành: <strong>{formatTime(elapsedTime)}</strong></p>
-            <button className="restart-btn" onClick={() => navigate('/student-dashboard')}>
+            <p>
+              Điểm của bạn:{" "}
+              <strong>
+                {score}/{total}
+              </strong>
+            </p>
+            <p>
+              Tỷ lệ đúng: <strong>{((score / total) * 100).toFixed(1)}%</strong>
+            </p>
+            <p>
+              Thời gian hoàn thành: <strong>{formatTime(elapsedTime)}</strong>
+            </p>
+            <button
+              className="restart-btn"
+              onClick={() => navigate("/student-dashboard")}
+            >
               Thoát
             </button>
           </div>

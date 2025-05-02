@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import './TestResultScreen.css';
-import NavbarGV from './NavbarGV';
-import FooterGV from './FooterGV';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useParams, NavLink } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import "./TestResultScreen.css";
+import NavbarGV from "./NavbarGV";
+import FooterGV from "./FooterGV";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useParams, NavLink } from "react-router-dom";
+import axios from "axios";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -18,8 +18,10 @@ const TestResultScreen = () => {
   useEffect(() => {
     const fetchExamData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/exam/${examId}`);
-        setExamData(response.data);  // Save exam data to state
+        const response = await axios.get(
+          `http://localhost:3000/api/exam/${examId}`
+        );
+        setExamData(response.data); // Save exam data to state
       } catch (err) {
         console.error("Error fetching exam data:", err);
       }
@@ -45,20 +47,23 @@ const TestResultScreen = () => {
 
   // Calculate score distribution
   const scoreDistribution = {
-    "10": studentResults.filter(item => item.score === 10).length,
-    "9": studentResults.filter(item => item.score === 9).length,
-    "8": studentResults.filter(item => item.score === 8).length,
-    "7": studentResults.filter(item => item.score === 7).length,
-    "6": studentResults.filter(item => item.score === 6).length,
-    "5": studentResults.filter(item => item.score === 5).length,
-    "4": studentResults.filter(item => item.score === 4).length,
-    "3": studentResults.filter(item => item.score === 3).length,
-    "2": studentResults.filter(item => item.score === 2).length,
-    "1": studentResults.filter(item => item.score === 1).length,
-    "0": studentResults.filter(item => item.score === 0).length,
+    10: studentResults.filter((item) => item.score === 10).length,
+    9: studentResults.filter((item) => item.score === 9).length,
+    8: studentResults.filter((item) => item.score === 8).length,
+    7: studentResults.filter((item) => item.score === 7).length,
+    6: studentResults.filter((item) => item.score === 6).length,
+    5: studentResults.filter((item) => item.score === 5).length,
+    4: studentResults.filter((item) => item.score === 4).length,
+    3: studentResults.filter((item) => item.score === 3).length,
+    2: studentResults.filter((item) => item.score === 2).length,
+    1: studentResults.filter((item) => item.score === 1).length,
+    0: studentResults.filter((item) => item.score === 0).length,
   };
 
-  const total = Object.values(scoreDistribution).reduce((acc, val) => acc + val, 0);
+  const total = Object.values(scoreDistribution).reduce(
+    (acc, val) => acc + val,
+    0
+  );
   const percentages = {};
   for (const [key, value] of Object.entries(scoreDistribution)) {
     percentages[key] = ((value / total) * 100).toFixed(1);
@@ -70,8 +75,20 @@ const TestResultScreen = () => {
     datasets: [
       {
         data: Object.values(scoreDistribution),
-        backgroundColor: ['#006400', '#008000', '#3CB371', '#00FF7F', '#90EE90'],
-        hoverBackgroundColor: ['#004d00', '#006600', '#2e8b57', '#00cc66', '#7fdc7f'],
+        backgroundColor: [
+          "#006400",
+          "#008000",
+          "#3CB371",
+          "#00FF7F",
+          "#90EE90",
+        ],
+        hoverBackgroundColor: [
+          "#004d00",
+          "#006600",
+          "#2e8b57",
+          "#00cc66",
+          "#7fdc7f",
+        ],
       },
     ],
   };
@@ -83,18 +100,20 @@ const TestResultScreen = () => {
         display: false,
       },
       datalabels: {
-        color: '#fff',
+        color: "#fff",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
         formatter: (value, context) => {
-          const total = context.chart._metasets[0].total || context.dataset.data.reduce((a, b) => a + b, 0);
+          const total =
+            context.chart._metasets[0].total ||
+            context.dataset.data.reduce((a, b) => a + b, 0);
           const percentage = (value / total) * 100;
           return `${percentage.toFixed(1)}%`;
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   return (
@@ -103,15 +122,26 @@ const TestResultScreen = () => {
 
       <div className="content-area">
         <div className="test-header">
-          <div className="test-title">Tên bài KT {examData.title} <span className="test-subtitle">Ngày tạo: {formatDate(examData.createdAt)}</span></div>
+          <div className="test-title">
+            Tên bài KT {examData.title}{" "}
+            <span className="test-subtitle">
+              Ngày tạo: {formatDate(examData.createdAt)}
+            </span>
+          </div>
           <div className="test-stats"> Thời gian: {examData.duration}s</div>
         </div>
 
         <div className="tab-nav">
-          <NavLink to={`/review-test/${examId}`} className={({ isActive }) => isActive ? "active" : ""}>
+          <NavLink
+            to={`/review-test/${examId}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
             Câu hỏi
           </NavLink>
-          <NavLink to={`/resulttest/${examId}`} className={({ isActive }) => isActive ? "active" : ""}>
+          <NavLink
+            to={`/resulttest/${examId}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
             Điểm
           </NavLink>
         </div>
@@ -122,8 +152,11 @@ const TestResultScreen = () => {
             {studentResults.map((student, index) => (
               <div className="student-row" key={index}>
                 <div className="student-details">
-                  <div className="student-name">{student.name}</div>  {/* Display student email */}
-                  <div className="student-time">Thời gian làm bài: {student.timeSpent}s</div>
+                  <div className="student-name">{student.name}</div>{" "}
+                  {/* Display student email */}
+                  <div className="student-time">
+                    Thời gian làm bài: {student.timeSpent}s
+                  </div>
                 </div>
                 <div className="score-badge">{student.score}</div>
               </div>
@@ -133,7 +166,11 @@ const TestResultScreen = () => {
           <div className="stats-panel">
             <div className="chart">
               <div className="donut-chart">
-                <Doughnut data={chartData} options={chartOptions} plugins={[ChartDataLabels]} />
+                <Doughnut
+                  data={chartData}
+                  options={chartOptions}
+                  plugins={[ChartDataLabels]}
+                />
               </div>
               <div className="chart-legend">
                 <div className="chart-caption">Thống kê điểm</div>

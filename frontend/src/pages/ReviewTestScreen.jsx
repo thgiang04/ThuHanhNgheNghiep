@@ -36,16 +36,22 @@ const ReviewTestScreen = () => {
             </span>
           </div>
           <div className="test-meta">
-            Tổng số điểm: {exam.questions.reduce((sum, q) => sum + q.score, 0)} &nbsp;
-            Thời gian: {exam.duration} giây
+            Tổng số điểm: {exam.questions.reduce((sum, q) => sum + q.score, 0)}{" "}
+            &nbsp; Thời gian: {exam.duration} giây
           </div>
         </div>
 
         <div className="tab-nav">
-          <NavLink to={`/review-test/${examId}`} className={({ isActive }) => (isActive ? "active" : "")}>
+          <NavLink
+            to={`/review-test/${examId}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
             Câu hỏi
           </NavLink>
-          <NavLink to={`/resulttest/${examId}`} className={({ isActive }) => (isActive ? "active" : "")}>
+          <NavLink
+            to={`/resulttest/${examId}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
             Điểm
           </NavLink>
         </div>

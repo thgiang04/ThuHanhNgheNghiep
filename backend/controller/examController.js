@@ -4,10 +4,14 @@ const Result = require("../model/resultModel.js"); // Thêm model result
 
 exports.createExam = async (req, res) => {
   try {
-    const { title, duration } = req.body;
+    const { title, startTime, endTime, duration  } = req.body;
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    const newExam = new Exam({ title, duration, code });
+    const newExam = new Exam({ title,
+      code,
+      startTime,
+      endTime,
+      duration, });
     await newExam.save();
 
     res.status(201).json(newExam); // Trả về ID để frontend tạo câu hỏi

@@ -287,7 +287,9 @@ const UserProfileGV = () => {
               />
             </div>
             <div className="popup-buttonsGV">
-              <button className="popup-buttonGV" onClick={handleChangePassword}>Cập nhật</button>
+              <button className="popup-buttonGV" onClick={handleChangePassword}>
+                Cập nhật
+              </button>
               <button
                 className="popup-buttonGV cancel"
                 onClick={() => setShowChangePassword(false)}

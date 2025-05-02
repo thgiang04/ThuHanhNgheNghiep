@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './ForgotPasswordScreen.css';
-import bgImage from '../assets/bg.png';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./ForgotPasswordScreen.css";
+import bgImage from "../assets/bg.png";
 
 const ForgotPasswordScreen = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +27,9 @@ const ForgotPasswordScreen = () => {
           />
           <button type="submit">Gửi liên kết</button>
         </form>
-        <Link to="/login" className="back-link">← Quay lại đăng nhập</Link>
+        <Link to="/login" className="back-link">
+          ← Quay lại đăng nhập
+        </Link>
       </div>
     </div>
   );

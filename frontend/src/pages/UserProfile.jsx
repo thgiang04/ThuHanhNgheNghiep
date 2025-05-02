@@ -99,7 +99,7 @@ const UserProfile = () => {
     if (newPassword !== confirmPassword) {
       return alert("Mật khẩu mới không khớp.");
     }
-    console.log(user.email)
+    console.log(user.email);
     try {
       await axios.put(`http://localhost:3000/api/user/change-password`, {
         email: user.email,
@@ -290,7 +290,9 @@ const UserProfile = () => {
               />
             </div>
             <div className="popup-buttons">
-              <button className="popup-button" onClick={handleChangePassword} >Cập nhật</button>
+              <button className="popup-button" onClick={handleChangePassword}>
+                Cập nhật
+              </button>
               <button
                 className="popup-button cancel"
                 onClick={() => setShowChangePassword(false)}

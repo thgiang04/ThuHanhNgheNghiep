@@ -1,24 +1,28 @@
-import React from 'react';
-import './ProcessSection.css';
-import mot from '../assets/mot.jpg';
-import hai from '../assets/hai.png'; 
-import ba from '../assets/ba.png';
-import bon from '../assets/bon.png';
-import nam from '../assets/nam.png';
-import chart from '../assets/chart.png';
+import React from "react";
+import "./ProcessSection.css";
+import mot from "../assets/mot.jpg";
+import hai from "../assets/hai.png";
+import ba from "../assets/ba.png";
+import bon from "../assets/bon.png";
+import nam from "../assets/nam.png";
+import chart from "../assets/chart.png";
 
 const ProcessSection = () => {
   return (
     <section className="process-section">
       <div className="process-container">
         <h2 className="process-title">Cách ThinkFast hoạt động</h2>
-       
+
         <div className="process-steps">
           {/* Step 1 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
-                <img src={mot} alt="Giáo viên tạo bài thi" className="process-image" />
+                <img
+                  src={mot}
+                  alt="Giáo viên tạo bài thi"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">01</div>
@@ -26,14 +30,17 @@ const ProcessSection = () => {
                   <p>Giáo viên tạo bài thi</p>
                 </div>
               </div>
-              
             </div>
           </div>
           {/* Step 2 */}
           <div className="process-step">
-            <div className="step-content">             
+            <div className="step-content">
               <div className="step-image">
-                <img src={hai} alt="Thêm câu hỏi vào bài thi" className="process-image" />
+                <img
+                  src={hai}
+                  alt="Thêm câu hỏi vào bài thi"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">02</div>
@@ -43,12 +50,16 @@ const ProcessSection = () => {
               </div>
             </div>
           </div>
-         
+
           {/* Step 3 */}
           <div className="process-step">
-            <div className="step-content">             
+            <div className="step-content">
               <div className="step-image">
-                <img src={ba} alt="Thêm học sinh vào bài thi" className="process-image" />
+                <img
+                  src={ba}
+                  alt="Thêm học sinh vào bài thi"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">03</div>
@@ -58,12 +69,16 @@ const ProcessSection = () => {
               </div>
             </div>
           </div>
-         
+
           {/* Step 4 */}
           <div className="process-step">
-            <div className="step-content">             
+            <div className="step-content">
               <div className="step-image">
-                <img src={bon} alt="Học sinh làm bài thi" className="process-image" />
+                <img
+                  src={bon}
+                  alt="Học sinh làm bài thi"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">04</div>
@@ -73,12 +88,16 @@ const ProcessSection = () => {
               </div>
             </div>
           </div>
-         
+
           {/* Step 5 */}
           <div className="process-step">
-            <div className="step-content">             
+            <div className="step-content">
               <div className="step-image">
-                <img src={nam} alt="Học sinh xem điểm" className="process-image" />
+                <img
+                  src={nam}
+                  alt="Học sinh xem điểm"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">05</div>
@@ -88,12 +107,16 @@ const ProcessSection = () => {
               </div>
             </div>
           </div>
-         
+
           {/* Step 6 */}
           <div className="process-step">
-            <div className="step-content">             
+            <div className="step-content">
               <div className="step-image">
-                <img src={chart} alt="Thống kê kết quả" className="process-image" />
+                <img
+                  src={chart}
+                  alt="Thống kê kết quả"
+                  className="process-image"
+                />
               </div>
               <div className="step-info">
                 <div className="step-number">06</div>

@@ -1,5 +1,5 @@
-import React from 'react';
-import './FooterGV.css';
+import React from "react";
+import "./FooterGV.css";
 
 const FooterGV = () => {
   return (
