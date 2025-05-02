@@ -10,6 +10,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    // chưa xử lí ở đây nếu có email và password thì sẽ lấy được role để chuyển
     if (email === 'teacher@example.com' && password === '123456') {
       navigate('/teacher-dashboard');
     } else if (email === 'student@example.com' && password === '123456') {

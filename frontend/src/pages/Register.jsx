@@ -7,6 +7,8 @@ const Register = () => {
   const navigate = useNavigate(); 
   const { role } = useParams(); 
 
+
+  // chưa xử lí đăng kí
   const handleRegister = () => {
     navigate('/login');
   };
