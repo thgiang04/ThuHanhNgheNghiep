@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import NavbarGV from "./NavbarGV";
 import FooterGV from "./FooterGV";
 import "./UserProfileGV.css";
-import defaultAvatar from "../assets/userGV.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 

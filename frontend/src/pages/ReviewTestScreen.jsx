@@ -1,12 +1,28 @@
-import React from 'react';
-import { useParams, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, NavLink } from "react-router-dom";
+import axios from "axios";
 import "./ReviewTestScreen.css";
-import NavbarGV from './NavbarGV';
-import FooterGV from './FooterGV';
+import NavbarGV from "./NavbarGV";
+import FooterGV from "./FooterGV";
 
 const ReviewTestScreen = () => {
-  const { examId } = useParams();  
-  console.log("Exam ID in ReviewTestScreen:", examId);
+  const { examId } = useParams();
+  const [exam, setExam] = useState(null);
+
+  useEffect(() => {
+    const fetchExam = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/exam/${examId}`);
+        setExam(res.data);
+      } catch (err) {
+        console.error("Lỗi khi tải bài kiểm tra:", err);
+      }
+    };
+
+    fetchExam();
+  }, [examId]);
+
+  if (!exam) return <div>Đang tải...</div>;
 
   return (
     <>
@@ -14,42 +30,43 @@ const ReviewTestScreen = () => {
       <div className="review-container">
         <div className="test-header">
           <div>
-            <strong>Tên bài KT {examId}</strong> <span className="dim-text">(ngày tạo)</span>
+            <strong>{exam.title}</strong>{" "}
+            <span className="dim-text">
+              ({new Date(exam.createdAt).toLocaleDateString()})
+            </span>
           </div>
-          <div className="test-meta">Tổng số điểm: 2 &nbsp; Thời gian: 6s</div>
+          <div className="test-meta">
+            Tổng số điểm: {exam.questions.reduce((sum, q) => sum + q.score, 0)} &nbsp;
+            Thời gian: {exam.duration} giây
+          </div>
         </div>
 
         <div className="tab-nav">
-          <NavLink to={`/review-test/${examId}`} className={({ isActive }) => isActive ? "active" : ""}>
+          <NavLink to={`/review-test/${examId}`} className={({ isActive }) => (isActive ? "active" : "")}>
             Câu hỏi
           </NavLink>
-          <NavLink to={`/resulttest/${examId}`} className={({ isActive }) => isActive ? "active" : ""}>
+          <NavLink to={`/resulttest/${examId}`} className={({ isActive }) => (isActive ? "active" : "")}>
             Điểm
           </NavLink>
         </div>
 
-        {[1, 2].map((index) => (
-          <div key={index} className="question-card">
-            <div className="question-title">Câu {index}</div>
-            <input
-              className="question-input"
-              value="Nội dung câu hỏi"
-              readOnly
-            />
+        {exam.questions.map((q, index) => (
+          <div key={q._id} className="question-card">
+            <div className="question-title">Câu {index + 1}</div>
+            <input className="question-input" value={q.content} readOnly />
 
             <div className="answers-group">
               {["A", "B", "C", "D"].map((opt, i) => (
                 <label key={opt} className="answer-option">
                   <input
                     type="radio"
-                    name={`review-${index}`}
-                    checked={opt === "A"}
+                    checked={q.correctAnswer === opt}
                     readOnly
                   />
                   <span className="label">{opt}</span>
                   <input
                     className="answer-input"
-                    value="Đáp án"
+                    value={q.options[i]}
                     readOnly
                   />
                 </label>
@@ -59,7 +76,7 @@ const ReviewTestScreen = () => {
             <div className="score-time">
               <label>
                 Điểm
-                <input type="text" value="1" readOnly />
+                <input type="text" value={q.score} readOnly />
               </label>
             </div>
           </div>

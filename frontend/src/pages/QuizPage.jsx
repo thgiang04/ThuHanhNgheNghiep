@@ -1,70 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import './QuizPage.css';
-import Navbar2 from './Navbar2';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import "./QuizPage.css";
+import Navbar2 from "./Navbar2";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const QuizPage = () => {
   const navigate = useNavigate();
-
-  const questions = [
-    {
-      id: 1,
-      question: "React là thư viện JavaScript để làm gì?",
-      options: [
-        "A. Xây dựng giao diện người dùng",
-        "B. Xử lý dữ liệu backend",
-        "C. Thiết kế đồ họa",
-        "D. Phân tích dữ liệu"
-      ],
-      correctAnswer: "A"
-    },
-    {
-      id: 2,
-      question: "Hook nào được sử dụng để quản lý state trong function component?",
-      options: [
-        "A. useEffect",
-        "B. useContext",
-        "C. useState",
-        "D. useReducer"
-      ],
-      correctAnswer: "C"
-    },
-  ];
+  const { state } = useLocation();
+  const exam = state?.exam;
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [score, setScore] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
+  const questions = exam?.questions || [];
   const currentQuestion = questions[currentQuestionIndex];
 
+  const hasSubmitted = useRef(false);
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setElapsedTime(prev => prev + 1); 
-    }, 1000);
+    if (exam && elapsedTime >= exam.duration && !hasSubmitted.current) {
+      hasSubmitted.current = true;
+      navigate("/result", {
+        state: {
+          score,
+          total: questions.reduce((sum, q) => sum + q.score, 0),
+          elapsedTime,
+        },
+      });
+    }
+  }, [elapsedTime, exam, navigate, questions, score]);
 
+  useEffect(() => {
+    if (!exam) return;
+    const timer = setInterval(() => setElapsedTime((prev) => prev + 1), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [exam]);
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+  const handleOptionSelect = (index) => {
+    setSelectedOptionIndex(index);
 
-    if (option[0] === currentQuestion.correctAnswer) {
-      setScore(score + 1);
+    const correctIndex = ["A", "B", "C", "D"].indexOf(
+      currentQuestion.correctAnswer
+    );
+    if (index === correctIndex) {
+      setScore(score + currentQuestion.score);
     }
   };
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
+      setSelectedOptionIndex(null); // reset lựa chọn
     } else {
-      navigate('/result', {
+      navigate("/result", {
         state: {
           score,
-          total: questions.length,
-          elapsedTime
-        }
+          total: questions.reduce((sum, q) => sum + q.score, 0),
+          elapsedTime,
+        },
       });
     }
   };
@@ -72,8 +66,16 @@ const QuizPage = () => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins} phút ${secs < 10 ? '0' : ''}${secs} giây`;
+    return `${mins} phút ${secs < 10 ? "0" : ""}${secs} giây`;
   };
+
+  if (!exam) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h3>Không có dữ liệu bài kiểm tra. Vui lòng quay lại nhập mã.</h3>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -83,40 +85,51 @@ const QuizPage = () => {
           Câu {currentQuestionIndex + 1}/{questions.length}
         </div>
 
-        <div className="timer-box">
-          ⏱️ Thời gian: {formatTime(elapsedTime)}
-        </div>
+        <div className="timer-box">⏱️ Thời gian: {formatTime(elapsedTime)}</div>
 
-        <h2 className="question-text">{currentQuestion.question}</h2>
+        {exam.duration - elapsedTime <= 10 &&
+          exam.duration - elapsedTime > 0 && (
+            <div className="warning">
+              ⚠️ Còn {exam.duration - elapsedTime} giây, hãy nhanh lên!
+            </div>
+          )}
+
+        <h2 className="question-text">{currentQuestion.content}</h2>
 
         <div className="options-grid">
-          {currentQuestion.options.map((option, index) => (
-            <button
-              key={index}
-              className={`option-btn ${
-                selectedOption === option
-                  ? option[0] === currentQuestion.correctAnswer
-                    ? 'correct'
-                    : 'incorrect'
-                  : ''
-              }`}
-              onClick={() => !selectedOption && handleOptionSelect(option)}
-              disabled={selectedOption}
-            >
-              {option}
-            </button>
-          ))}
+          {currentQuestion.options.map((option, index) => {
+            const correctIndex = ["A", "B", "C", "D"].indexOf(
+              currentQuestion.correctAnswer
+            );
+            const isSelected = selectedOptionIndex === index;
+            const isCorrect = index === correctIndex;
+
+            return (
+              <button
+                key={index}
+                className={`option-btn ${
+                  isSelected ? (isCorrect ? "correct" : "incorrect") : ""
+                }`}
+                onClick={() =>
+                  selectedOptionIndex === null && handleOptionSelect(index)
+                }
+                disabled={selectedOptionIndex !== null}
+              >
+                {option}
+              </button>
+            );
+          })}
         </div>
 
         <div className="navigation">
           <button
             className="next-btn"
             onClick={goToNextQuestion}
-            disabled={!selectedOption}
+            disabled={selectedOptionIndex === null}
           >
             {currentQuestionIndex < questions.length - 1
-              ? 'Câu tiếp theo →'
-              : 'Xem kết quả'}
+              ? "Câu tiếp theo →"
+              : "Xem kết quả"}
           </button>
         </div>
       </div>

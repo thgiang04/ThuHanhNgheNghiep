@@ -1,41 +1,97 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./CreateTestScreen.css";
-import NavbarGV from './NavbarGV';
-import FooterGV from './FooterGV';
+import NavbarGV from "./NavbarGV";
+import FooterGV from "./FooterGV";
 
 const CreateTestScreen = () => {
+  const [title, setTitle] = useState("");
+  const [totalTime, setTotalTime] = useState(60);
   const [questions, setQuestions] = useState([
-    { id: 1, score: 1 },
-    { id: 2, score: 1 }
+    {
+      content: "",
+      options: ["", "", "", ""],
+      correctAnswer: "A",
+      score: 1,
+    },
   ]);
-  const [totalTime, setTotalTime] = useState(60); // chỉnh thời gian toàn bài
   const navigate = useNavigate();
 
-  const addQuestion = () => {
-    const newId = questions.length + 1;
-    setQuestions([...questions, { id: newId, score: 1 }]);
+  const handleAddQuestion = () => {
+    setQuestions([
+      ...questions,
+      {
+        content: "",
+        options: ["", "", "", ""],
+        correctAnswer: "A",
+        score: 1,
+      },
+    ]);
   };
 
-  const handleScoreChange = (index, newScore) => {
+  const handleQuestionChange = (index, field, value) => {
     const updated = [...questions];
-    updated[index].score = parseInt(newScore) || 1;
+    if (field === "content") updated[index].content = value;
+    else if (field === "score") updated[index].score = parseInt(value);
     setQuestions(updated);
   };
 
-  const totalScore = questions.reduce((sum, q) => sum + q.score, 0);
-
-  const handleCreateTest = () => {
-    // Xử lý lưu dữ liệu nếu cần
-    navigate("/exams");
+  const handleOptionChange = (qIndex, optIndex, value) => {
+    const updated = [...questions];
+    updated[qIndex].options[optIndex] = value;
+    setQuestions(updated);
   };
+
+  const handleCorrectChange = (qIndex, value) => {
+    const updated = [...questions];
+    updated[qIndex].correctAnswer = value;
+    setQuestions(updated);
+  };
+
+  const handleCreateTest = async () => {
+    if (!title.trim()) return alert("Vui lòng nhập tên bài kiểm tra.");
+
+    try {
+      // Bước 1: tạo bài kiểm tra
+      const res = await axios.post("http://localhost:3000/api/exam", {
+        title,
+        duration: totalTime,
+      });
+
+      const examId = res.data._id;
+
+      // Bước 2: gửi từng câu hỏi
+      for (const q of questions) {
+        await axios.post(`http://localhost:3000/api/exam/${examId}/question`, {
+          content: q.content,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          score: q.score,
+        });
+      }
+
+      alert("Tạo bài kiểm tra thành công!");
+      navigate("/exams");
+    } catch (err) {
+      console.error(err);
+      alert("Tạo bài kiểm tra thất bại.");
+    }
+  };
+
+  const totalScore = questions.reduce((sum, q) => sum + q.score, 0);
 
   return (
     <>
       <NavbarGV />
       <div className="create-test-container">
         <div className="test-info">
-          <input className="test-name" placeholder="Nhập tên bài KT" />
+          <input
+            className="test-name"
+            placeholder="Nhập tên bài KT"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
           <div className="test-stats">
             <div className="total-score">Tổng số điểm: {totalScore}</div>
             <div className="time-setting">
@@ -53,15 +109,34 @@ const CreateTestScreen = () => {
         </div>
 
         {questions.map((q, index) => (
-          <div key={q.id} className="question-card">
+          <div key={index} className="question-card">
             <div className="question-title">Câu {index + 1}</div>
-            <input className="question-input" placeholder="Nhập câu hỏi" />
+            <input
+              className="question-input"
+              placeholder="Nhập câu hỏi"
+              value={q.content}
+              onChange={(e) =>
+                handleQuestionChange(index, "content", e.target.value)
+              }
+            />
             <div className="answers-group">
-              {["A", "B", "C", "D"].map((opt) => (
+              {["A", "B", "C", "D"].map((opt, i) => (
                 <label key={opt} className="answer-option">
-                  <input type="radio" name={`correct-${q.id}`} />
+                  <input
+                    type="radio"
+                    name={`correct-${index}`}
+                    checked={q.correctAnswer === opt}
+                    onChange={() => handleCorrectChange(index, opt)}
+                  />
                   <span className="label">{opt}</span>
-                  <input className="answer-input" placeholder="Nhập đáp án" />
+                  <input
+                    className="answer-input"
+                    placeholder="Nhập đáp án"
+                    value={q.options[i]}
+                    onChange={(e) =>
+                      handleOptionChange(index, i, e.target.value)
+                    }
+                  />
                 </label>
               ))}
             </div>
@@ -71,10 +146,14 @@ const CreateTestScreen = () => {
                 Điểm
                 <select
                   value={q.score}
-                  onChange={(e) => handleScoreChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleQuestionChange(index, "score", e.target.value)
+                  }
                 >
-                  {[1,2,3,4,5,6,7,8,9,10].map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -83,8 +162,12 @@ const CreateTestScreen = () => {
         ))}
 
         <div className="actions">
-          <button className="btn add-btn" onClick={addQuestion}>Thêm câu hỏi</button>
-          <button className="btn create-btn" onClick={handleCreateTest}>Tạo bài KT</button>
+          <button className="btn add-btn" onClick={handleAddQuestion}>
+            Thêm câu hỏi
+          </button>
+          <button className="btn create-btn" onClick={handleCreateTest}>
+            Tạo bài KT
+          </button>
         </div>
       </div>
       <FooterGV />
