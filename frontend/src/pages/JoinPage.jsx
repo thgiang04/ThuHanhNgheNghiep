@@ -17,6 +17,14 @@ function JoinPage() {
       const res = await axios.get(`http://localhost:3000/api/exam/code/${code}`);
       const exam = res.data;
 
+      // Kiểm tra trạng thái đã hoàn thành của bài kiểm tra
+      // const isCompleted = localStorage.getItem(`completed_${exam._id}`) === "true";
+      
+      // if (isCompleted) {
+      //   alert("Bạn đã hoàn thành bài kiểm tra này và không thể tham gia lại.");
+      //   return; // Không cho phép vào lại bài kiểm tra
+      // }
+
       navigate('/start-page', { state: { exam } }); // chuyển dữ liệu qua state
     } catch (err) {
       console.error(err);

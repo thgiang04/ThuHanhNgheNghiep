@@ -1,5 +1,6 @@
 const Exam = require("../model/examModel.js");
 const Question = require("../model/questionModel.js");
+const Result = require("../model/resultModel.js"); // Thêm model result
 
 exports.createExam = async (req, res) => {
   try {
@@ -14,6 +15,36 @@ exports.createExam = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.submitExamResults = async (req, res) => {
+  try {
+    const { name, examId, score, timeSpent } = req.body;
+
+    // Tạo kết quả bài kiểm tra mới
+    const newResult = new Result({
+      name: name,  // Gửi email thay vì studentId
+      examId,
+      score,
+      timeSpent,
+    });
+
+    // Lưu kết quả vào database
+    await newResult.save();
+
+    // Cập nhật lại mảng `results` trong Exam
+    const exam = await Exam.findById(examId);
+    exam.results.push(newResult._id);  // Đẩy kết quả vào mảng results của Exam
+
+    // Lưu lại Exam sau khi đã thêm kết quả vào mảng `results`
+    await exam.save();  // Quan trọng: Đảm bảo rằng Exam được lưu lại
+
+    res.status(201).json({ message: "Kết quả bài kiểm tra đã được lưu." });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 
 exports.getExamByCode = async (req, res) => {
   try {
@@ -56,9 +87,10 @@ exports.addQuestionToExam = async (req, res) => {
   }
 };
 
+// Trong hàm getExamById
 exports.getExamById = async (req, res) => {
   try {
-    const exam = await Exam.findById(req.params.examId).populate("questions");
+    const exam = await Exam.findById(req.params.examId).populate("questions").populate("results"); // populate cả "results"
     res.status(200).json(exam);
   } catch (err) {
     res.status(500).json({ message: err.message });

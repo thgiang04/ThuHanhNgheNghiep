@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./QuizPage.css";
 import Navbar2 from "./Navbar2";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const QuizPage = () => {
   const navigate = useNavigate();
@@ -18,9 +19,30 @@ const QuizPage = () => {
 
   const hasSubmitted = useRef(false);
 
+  const submitExamResults = async () => {
+    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
+    const name = user?.name; // Dùng email thay vì studentId
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/exam/${exam._id}/results`,
+        {
+          name: name, // Gửi email thay vì studentId
+          examId: exam._id,
+          score: score,
+          timeSpent: elapsedTime,
+        }
+      );
+      console.log("Kết quả đã được lưu:", response.data);
+    } catch (error) {
+      console.error("Lỗi khi lưu kết quả:", error);
+    }
+  };
+
   useEffect(() => {
     if (exam && elapsedTime >= exam.duration && !hasSubmitted.current) {
       hasSubmitted.current = true;
+      submitExamResults(); // Gửi kết quả khi hết thời gian
       navigate("/result", {
         state: {
           score,
@@ -39,7 +61,6 @@ const QuizPage = () => {
 
   const handleOptionSelect = (index) => {
     setSelectedOptionIndex(index);
-
     const correctIndex = ["A", "B", "C", "D"].indexOf(
       currentQuestion.correctAnswer
     );
@@ -53,6 +74,7 @@ const QuizPage = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOptionIndex(null); // reset lựa chọn
     } else {
+      submitExamResults();
       navigate("/result", {
         state: {
           score,
@@ -62,6 +84,8 @@ const QuizPage = () => {
       });
     }
   };
+
+  localStorage.setItem(`completed_${exam._id}`, "true");
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);

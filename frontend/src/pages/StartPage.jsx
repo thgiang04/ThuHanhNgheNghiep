@@ -12,7 +12,7 @@ function StartPage() {
 
   const handleStartQuiz = () => {
     if (!exam) return alert("Không có thông tin bài kiểm tra.");
-    navigate('/quiz', { state: { exam } }); // truyền tiếp sang trang quiz
+    navigate('/quiz', { state: { exam } }); 
   };
 
   if (!exam) {

@@ -40,8 +40,8 @@ const ResultPage = () => {
             <p>Điểm của bạn: <strong>{score}/{total}</strong></p>
             <p>Tỷ lệ đúng: <strong>{((score / total) * 100).toFixed(1)}%</strong></p>
             <p>Thời gian hoàn thành: <strong>{formatTime(elapsedTime)}</strong></p>
-            <button className="restart-btn" onClick={() => navigate('/')}>
-              🔁 Làm lại bài thi
+            <button className="restart-btn" onClick={() => navigate('/student-dashboard')}>
+              Thoát
             </button>
           </div>
         </div>
