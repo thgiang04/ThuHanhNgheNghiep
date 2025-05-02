@@ -16,60 +16,98 @@ const createUser = async (req, res) => {
   }
 };
 
-const getAllUser = async (req, res) => {
+const userLogin = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const userData = await User.find();
-    if (!userData || userData.length === 0) {
-      return res.status(404).json({ message: "User data not found." });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Sai mật khẩu" });
     }
-    return res.status(200).send(userData);
-  } catch (error) {
-    res.status(500).json({ errorMessage: error.message });
+    const { password: pw, ...userWithoutPass } = user._doc;
+    res.status(200).json(userWithoutPass);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-const getUserById = async (req, res) => {
+const updateUserByEmail = async (req, res) => {
+  const { email } = req.params;
+  const updatedData = req.body;
+
   try {
-    const id = req.params.id;
-    const userExits = await User.findById(id);
-    if (!userExits) {
-      return res.status(404).json({ message: "User not found" });
+    const user = await User.findOneAndUpdate(
+      { email },
+      updatedData,
+      { new: true } // Trả về user sau khi đã cập nhật
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
     }
-    res.status(200).send(userExits);
-  } catch (error) {
-    res.status(500).json({ errorMessage: error.message });
+
+    // Ẩn mật khẩu khi trả về
+    const { password, ...userWithoutPass } = user._doc;
+    res.status(200).json(userWithoutPass);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-const updateUserById = async (req, res) => {
+const uploadUserAvatar = async (req, res) => {
+  const { email } = req.params;
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ message: "Không có file ảnh được gửi lên." });
+  }
+
+  const imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+
   try {
-    const id = req.params.id;
-    const userExits = await User.findById(id);
-    if (!userExits) {
-      return res.status(404).json({ message: "User not found" });
+    const user = await User.findOneAndUpdate(
+      { email },
+      { image: imageUrl },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
     }
-    const updatedData = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.status(200).json(updatedData);
-  } catch (error) {
-    res.status(500).json({ errorMessage: error.message });
+
+    const { password, ...userWithoutPass } = user._doc;
+    res.status(200).json(userWithoutPass);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-const deleteUserById = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const userExits = await User.findById(id);
-    if (!userExits) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    await User.findByIdAndDelete(id)
+const changeUserPassword = async (req, res) => {
+  const { email, oldPassword, newPassword } = req.body;
 
-    res.status(200).json({message : "User deleted successfully."});
-  } catch (error) {
-    res.status(500).json({ errorMessage: error.message });
+  try {
+    const user = await User.findOne({ email: email.trim() });
+    console.log("chay here");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.password !== oldPassword) {
+      return res.status(401).json({ message: "Mật khẩu cũ không đúng." });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Đổi mật khẩu thành công." });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-module.exports = { createUser, getAllUser, getUserById, updateUserById, deleteUserById };
+module.exports = {
+  createUser,
+  userLogin,
+  updateUserByEmail,
+  uploadUserAvatar,
+  changeUserPassword,
+};
