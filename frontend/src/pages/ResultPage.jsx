@@ -24,9 +24,11 @@ const ResultPage = () => {
       <div className="result-page">
         <img src={bgImage} alt="background" className="background-image" />
         <div className="result-content">
-          <h2 className="sub-title">Bài kiểm tra thường xuyên</h2>
+          <h2 className="sub-title">Bài kiểm tra: {state.title}</h2>
           <p className="test-code">
-            Mã bài kiểm tra: <strong>#123456</strong>
+            {/* chưa thêm vào */}
+            
+            Mã bài kiểm tra: <strong> {state.code} </strong>
           </p>
           <div className="congrats">
             {"Chúc mừng bạn đã hoàn thành\nbài kiểm tra!"

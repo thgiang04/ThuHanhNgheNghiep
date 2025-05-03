@@ -7,7 +7,7 @@ import FooterGV from "./FooterGV";
 
 const CreateTestScreen = () => {
   const [title, setTitle] = useState("");
-  const [totalTime, setTotalTime] = useState(60);
+  const [totalTime, setTotalTime] = useState(1);
   const [startTime, setStartTime] = useState(""); // Thêm trường startTime
   const [endTime, setEndTime] = useState(""); // Thêm trường endTime
   const [questions, setQuestions] = useState([
@@ -100,7 +100,7 @@ const CreateTestScreen = () => {
             <div className="total-score">Tổng số điểm: {totalScore}</div>
             <div className="time-setting">
               <label>
-                Thời gian (giây):
+                Thời gian (phút):
                 <input
                   type="number"
                   min="1"

@@ -18,9 +18,9 @@ function JoinPage() {
         `http://localhost:3000/api/exam/code/${code}`
       );
       const exam = res.data;
-      const currentTime = new Date().getTime(); // Lấy thời gian hiện tại
-      const startTime = new Date(exam.startTime).getTime(); // Thời gian bắt đầu
-      const endTime = new Date(exam.endTime).getTime(); // Thời gian kết thúc
+      const currentTime = new Date().getTime(); 
+      const startTime = new Date(exam.startTime).getTime(); 
+      const endTime = new Date(exam.endTime).getTime(); 
 
       // Kiểm tra trạng thái đã hoàn thành của bài kiểm tra
 

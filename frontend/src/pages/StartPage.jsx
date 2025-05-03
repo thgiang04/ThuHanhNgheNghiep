@@ -40,7 +40,7 @@ function StartPage() {
           <button className="start-btn" onClick={handleStartQuiz}>
             Bắt đầu
           </button>
-          <div className="timer">🕒 {exam.duration}s</div>
+          <div className="timer">🕒 {exam.duration}phút</div>
         </div>
       </div>
       <Footer />

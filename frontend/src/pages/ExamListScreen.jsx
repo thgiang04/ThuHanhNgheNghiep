@@ -55,7 +55,7 @@ const ExamListScreen = () => {
               >
                 <strong>{exam.title}</strong>
                 <p>Mã bài kiểm tra: {exam.code}</p>
-                <p>Thời gian: {exam.duration / 60} phút</p>
+                <p>Thời gian: {exam.duration } phút</p>
               </div>
               <button
                 className="delete-button"

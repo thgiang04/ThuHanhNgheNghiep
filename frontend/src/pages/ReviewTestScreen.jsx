@@ -32,12 +32,12 @@ const ReviewTestScreen = () => {
           <div>
             <strong>{exam.title}</strong>{" "}
             <span className="dim-text">
-              ({new Date(exam.createdAt).toLocaleDateString()})
+              ({new Date(exam.createdAt).toLocaleDateString('en-GB')})
             </span>
           </div>
           <div className="test-meta">
             Tổng số điểm: {exam.questions.reduce((sum, q) => sum + q.score, 0)}{" "}
-            &nbsp; Thời gian: {exam.duration} giây
+            &nbsp; Thời gian: {exam.duration} phút
           </div>
         </div>
 

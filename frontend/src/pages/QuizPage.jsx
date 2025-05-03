@@ -40,7 +40,7 @@ const QuizPage = () => {
   };
 
   useEffect(() => {
-    if (exam && elapsedTime >= exam.duration && !hasSubmitted.current) {
+    if (exam && elapsedTime >= exam.duration * 60 && !hasSubmitted.current) {
       hasSubmitted.current = true;
       submitExamResults(); // Gửi kết quả khi hết thời gian
       navigate("/result", {
@@ -48,6 +48,8 @@ const QuizPage = () => {
           score,
           total: questions.reduce((sum, q) => sum + q.score, 0),
           elapsedTime,
+          title: exam.title,
+          code: exam.code,
         },
       });
     }
@@ -80,6 +82,8 @@ const QuizPage = () => {
           score,
           total: questions.reduce((sum, q) => sum + q.score, 0),
           elapsedTime,
+          title: exam.title,
+          code: exam.code,
         },
       });
     }
@@ -111,10 +115,10 @@ const QuizPage = () => {
 
         <div className="timer-box">⏱️ Thời gian: {formatTime(elapsedTime)}</div>
 
-        {exam.duration - elapsedTime <= 10 &&
-          exam.duration - elapsedTime > 0 && (
+        {exam.duration * 60 - elapsedTime <= 10 &&
+          exam.duration * 60 - elapsedTime > 0 && (
             <div className="warning">
-              ⚠️ Còn {exam.duration - elapsedTime} giây, hãy nhanh lên!
+              ⚠️ Còn {exam.duration * 60 - elapsedTime} giây, hãy nhanh lên!
             </div>
           )}
 

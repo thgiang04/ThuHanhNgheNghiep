@@ -60,21 +60,22 @@ const TestResultScreen = () => {
     0: studentResults.filter((item) => item.score === 0).length,
   };
 
-  const total = Object.values(scoreDistribution).reduce(
-    (acc, val) => acc + val,
-    0
+  const filteredScores = Object.entries(scoreDistribution).filter(
+    ([key, value]) => value > 0
   );
+
+  const total = filteredScores.reduce((acc, [_, value]) => acc + value, 0);
   const percentages = {};
-  for (const [key, value] of Object.entries(scoreDistribution)) {
+  filteredScores.forEach(([key, value]) => {
     percentages[key] = ((value / total) * 100).toFixed(1);
-  }
+  });
 
   // Data for the Doughnut chart
   const chartData = {
-    labels: Object.keys(scoreDistribution),
+    labels: filteredScores.map(([key]) => key),
     datasets: [
       {
-        data: Object.values(scoreDistribution),
+        data: filteredScores.map(([_, value]) => value),
         backgroundColor: [
           "#006400",
           "#008000",
@@ -128,7 +129,7 @@ const TestResultScreen = () => {
               Ngày tạo: {formatDate(examData.createdAt)}
             </span>
           </div>
-          <div className="test-stats"> Thời gian: {examData.duration}s</div>
+          <div className="test-stats"> Thời gian: {examData.duration} phút</div>
         </div>
 
         <div className="tab-nav">
@@ -155,7 +156,8 @@ const TestResultScreen = () => {
                   <div className="student-name">{student.name}</div>{" "}
                   {/* Display student email */}
                   <div className="student-time">
-                    Thời gian làm bài: {student.timeSpent}s
+                    Thời gian làm bài:{" "}
+                    {Math.round((student.timeSpent / 60) * 10) / 10} phút
                   </div>
                 </div>
                 <div className="score-badge">{student.score}</div>
