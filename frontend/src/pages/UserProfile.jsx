@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navbar2 from "./Navbar2";
 import Footer from "./Footer";
 import "./UserProfile.css";
@@ -9,15 +11,13 @@ const UserProfile = () => {
   const [showEditInfo, setShowEditInfo] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const navigate = useNavigate();
-  // Lấy user từ login
+  
   const [user, setUser] = useState(null);
-  // Lấy thông tin để edit user
   const [editUser, setEditUser] = useState({
     name: "",
     email: "",
     school: "",
   });
-  // state đổi mật khẩu
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
     newPassword: "",
@@ -29,7 +29,6 @@ const UserProfile = () => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
-      // Nếu không có user, chuyển về login
       navigate("/login");
     }
   }, []);
@@ -55,10 +54,16 @@ const UserProfile = () => {
 
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      alert("Cập nhật ảnh đại diện thành công!");
+      toast.success("Cập nhật ảnh đại diện thành công!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi tải ảnh đại diện.");
+      toast.error("Lỗi khi tải ảnh đại diện", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -76,16 +81,21 @@ const UserProfile = () => {
         finalUpdate
       );
 
-      // Cập nhật localStorage và state
       const updatedUser = { ...user, ...finalUpdate };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
 
       setShowEditInfo(false);
-      alert("Cập nhật thành công!");
+      toast.success("Cập nhật thông tin thành công!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (err) {
       console.error(err);
-      alert("Cập nhật thất bại. Vui lòng thử lại.");
+      toast.error("Cập nhật thất bại. Vui lòng thử lại.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -93,13 +103,21 @@ const UserProfile = () => {
     const { oldPassword, newPassword, confirmPassword } = passwordForm;
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      return alert("Vui lòng điền đầy đủ thông tin.");
+      toast.error("Vui lòng điền đầy đủ thông tin.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
     }
 
     if (newPassword !== confirmPassword) {
-      return alert("Mật khẩu mới không khớp.");
+      toast.error("Mật khẩu mới không khớp.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
     }
-    console.log(user.email);
+
     try {
       await axios.put(`http://localhost:3000/api/user/change-password`, {
         email: user.email,
@@ -107,7 +125,10 @@ const UserProfile = () => {
         newPassword,
       });
 
-      alert("Đổi mật khẩu thành công!");
+      toast.success("Đổi mật khẩu thành công!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setShowChangePassword(false);
       setPasswordForm({
         oldPassword: "",
@@ -116,7 +137,10 @@ const UserProfile = () => {
       });
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Đổi mật khẩu thất bại.");
+      toast.error(err.response?.data?.message || "Đổi mật khẩu thất bại.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -303,6 +327,18 @@ const UserProfile = () => {
           </div>
         </div>
       )}
+
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
       <Footer />
     </>

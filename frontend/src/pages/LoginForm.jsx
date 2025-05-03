@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./LoginForm.css";
 import bgImage from "../assets/bg.png";
 import axios from "axios";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,22 +23,39 @@ const LoginForm = () => {
       const role = loggedInUser.role;
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      if (role === "teacher") {
-        navigate("/teacher-dashboard");
-      } else if (role === "student") {
-        navigate("/student-dashboard");
-      }
+      toast.success(`Đăng nhập thành công với vai trò ${role === "teacher" ? "giáo viên" : "học sinh"}!`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        onClose: () => {
+          if (role === "teacher") {
+            navigate("/teacher-dashboard");
+          } else if (role === "student") {
+            navigate("/student-dashboard");
+          }
+        }
+      });
+
     } catch (err) {
-      alert("Sai email hoặc mật khẩu!");
+      toast.error("Sai email hoặc mật khẩu!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error(err);
     }
   };
 
   return (
-    <div
-      className="login-wrapper"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
+    <div className="login-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className="login-container">
         <h1 className="login-header">Đăng nhập</h1>
 
@@ -72,6 +90,19 @@ const LoginForm = () => {
           Quên mật khẩu?
         </Link>
       </div>
+
+      {/* Thêm ToastContainer vào cuối component */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Register.css";
 import bgImage from "../assets/bg.png";
 import axios from "axios";
@@ -22,7 +24,6 @@ const Register = () => {
     setUser({ ...user, [name]: value });
   };
 
-  // chưa xử lí đăng kí
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -30,26 +31,38 @@ const Register = () => {
 
     // Kiểm tra không để trống
     if (!name || !email || !password || !passwordSecurity) {
-      alert("Vui lòng điền đầy đủ thông tin.");
+      toast.error("Vui lòng điền đầy đủ thông tin.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
-    // Kiểm tra định dạng email đơn giản
+    // Kiểm tra định dạng email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert("Email không hợp lệ.");
+      toast.error("Email không hợp lệ.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     // Kiểm tra độ dài mật khẩu
     if (password.length < 6) {
-      alert("Mật khẩu phải có ít nhất 6 ký tự.");
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     // Kiểm tra mật khẩu khớp
     if (password !== passwordSecurity) {
-      alert("Mật khẩu không khớp. Vui lòng nhập lại.");
+      toast.error("Mật khẩu không khớp. Vui lòng nhập lại.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -60,19 +73,24 @@ const Register = () => {
         password: user.password,
         role: user.role,
       });
-      console.log("User created successfully.");
-      navigate("/login");
+      
+      toast.success(`Đăng ký ${role === "teacher" ? "giáo viên" : "học sinh"} thành công!`, {
+        position: "top-center",
+        autoClose: 2000,
+        onClose: () => navigate("/login")
+      });
+      
     } catch (error) {
       console.log(error);
-      alert("Đăng ký thất bại. Vui lòng thử lại.");
+      toast.error("Đăng ký thất bại. Vui lòng thử lại.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
   return (
-    <div
-      className="login-wrapper"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
+    <div className="login-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className="login-container">
         <h1 className="login-header">
           Đăng ký {role === "teacher" ? "Giáo viên" : "Học sinh"}
@@ -124,6 +142,19 @@ const Register = () => {
           </p>
         </div>
       </div>
+
+      {/* Thêm ToastContainer vào cuối component */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
