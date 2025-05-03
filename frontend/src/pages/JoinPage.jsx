@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./JoinPage.css";
 import Navbar2 from "./Navbar2";
 import bgImage from "../assets/bg1.png";
@@ -11,35 +13,62 @@ function JoinPage() {
   const navigate = useNavigate();
 
   const handleJoin = async () => {
-    if (!code.trim()) return alert("Vui lòng nhập mã bài kiểm tra.");
+    if (!code.trim()) {
+      toast.error("Vui lòng nhập mã bài kiểm tra", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
+    }
 
     try {
       const res = await axios.get(
         `http://localhost:3000/api/exam/code/${code}`
       );
       const exam = res.data;
-      const currentTime = new Date().getTime(); 
-      const startTime = new Date(exam.startTime).getTime(); 
-      const endTime = new Date(exam.endTime).getTime(); 
+      const currentTime = new Date().getTime();
+      const startTime = new Date(exam.startTime).getTime();
+      const endTime = new Date(exam.endTime).getTime();
 
       // Kiểm tra trạng thái đã hoàn thành của bài kiểm tra
-
-      if (currentTime < startTime || currentTime > endTime) {
-        alert("Bài kiểm tra đã đóng, bạn không thể tham gia.");
-        return; // Không cho phép vào bài kiểm tra nếu quá thời gian
-      }
-
       const isCompleted =
         localStorage.getItem(`completed_${exam._id}`) === "true";
-      if (isCompleted) {
-        alert("Bạn đã hoàn thành bài kiểm tra này và không thể tham gia lại.");
-        return; // Không cho phép vào lại bài kiểm tra
+
+      if (currentTime < startTime) {
+        toast.error("Bài kiểm tra chưa mở, bạn không thể tham gia.", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        return;
       }
 
-      navigate("/start-page", { state: { exam } }); // chuyển dữ liệu qua state
+      if (currentTime > endTime) {
+        toast.error("Bài kiểm tra đã đóng, bạn không thể tham gia.", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        return;
+      }
+
+      if (isCompleted) {
+        toast.error("Bạn đã hoàn thành bài kiểm tra này và không thể tham gia lại.", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        return;
+      }
+
+      toast.success("Đang chuyển hướng đến bài kiểm tra...", {
+        position: "top-center",
+        autoClose: 1000,
+        onClose: () => navigate("/start-page", { state: { exam } }),
+      });
     } catch (err) {
       console.error(err);
-      alert("Không tìm thấy bài kiểm tra với mã đã nhập.");
+      toast.error("Không tìm thấy bài kiểm tra với mã đã nhập.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -64,6 +93,17 @@ function JoinPage() {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Footer />
     </>
   );

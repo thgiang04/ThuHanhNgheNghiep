@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "./CreateTestScreen.css";
 import NavbarGV from "./NavbarGV";
@@ -7,9 +9,9 @@ import FooterGV from "./FooterGV";
 
 const CreateTestScreen = () => {
   const [title, setTitle] = useState("");
-  const [totalTime, setTotalTime] = useState(1);
-  const [startTime, setStartTime] = useState(""); // Thêm trường startTime
-  const [endTime, setEndTime] = useState(""); // Thêm trường endTime
+  const [totalTime, setTotalTime] = useState(60);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [questions, setQuestions] = useState([
     {
       content: "",
@@ -30,6 +32,10 @@ const CreateTestScreen = () => {
         score: 1,
       },
     ]);
+    toast.success("Đã thêm câu hỏi mới", {
+      position: "top-center",
+      autoClose: 1500,
+    });
   };
 
   const handleQuestionChange = (index, field, value) => {
@@ -52,34 +58,77 @@ const CreateTestScreen = () => {
   };
 
   const handleCreateTest = async () => {
-    if (!title.trim()) return alert("Vui lòng nhập tên bài kiểm tra.");
-    if (!startTime || !endTime)
-      return alert("Vui lòng nhập thời gian bắt đầu và kết thúc.");
+    if (!title.trim()) {
+      toast.error("Vui lòng nhập tên bài kiểm tra", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
+    }
+    if (!startTime || !endTime) {
+      toast.error("Vui lòng nhập thời gian bắt đầu và kết thúc", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
+    }
 
     try {
       const res = await axios.post("http://localhost:3000/api/exam", {
         title,
         duration: totalTime,
-        startTime, // Gửi startTime
-        endTime, // Gửi endTime
+        startTime,
+        endTime,
       });
 
       const examId = res.data._id;
 
-      for (const q of questions) {
-        await axios.post(`http://localhost:3000/api/exam/${examId}/question`, {
-          content: q.content,
-          options: q.options,
-          correctAnswer: q.correctAnswer,
-          score: q.score,
-        });
+      // Show progress toast
+      const progressToast = toast.loading("Đang tạo bài kiểm tra...", {
+        position: "top-center",
+      });
+
+      // Process questions sequentially
+      for (const [index, q] of questions.entries()) {
+        try {
+          await axios.post(`http://localhost:3000/api/exam/${examId}/question`, {
+            content: q.content,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            score: q.score,
+          });
+          
+          // Update progress
+          toast.update(progressToast, {
+            render: `Đang tạo câu hỏi ${index + 1}/${questions.length}`,
+            type: "default",
+            isLoading: true,
+          });
+        } catch (err) {
+          console.error(`Lỗi khi tạo câu hỏi ${index + 1}:`, err);
+          throw err;
+        }
       }
 
-      alert("Tạo bài kiểm tra thành công!");
-      navigate("/exams");
+      // Final success message
+      toast.update(progressToast, {
+        render: "Tạo bài kiểm tra thành công!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      // Navigate after success
+      setTimeout(() => navigate("/exams"), 2000);
     } catch (err) {
       console.error(err);
-      alert("Tạo bài kiểm tra thất bại.");
+      toast.error(
+        err.response?.data?.message || "Tạo bài kiểm tra thất bại", 
+        {
+          position: "top-center",
+          autoClose: 2000,
+        }
+      );
     }
   };
 
@@ -194,6 +243,17 @@ const CreateTestScreen = () => {
           </button>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <FooterGV />
     </>
   );
