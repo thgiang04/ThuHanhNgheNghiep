@@ -2,7 +2,7 @@ const Exam = require("../model/examModel.js");
 const Question = require("../model/questionModel.js");
 const Result = require("../model/resultModel.js"); // Thêm model result
 const User = require("../model/userModel.js"); // 🛠 Thêm dòng này nếu chưa có
-
+const mongoose = require("mongoose");
 
 exports.createExam = async (req, res) => {
   try {
@@ -57,13 +57,10 @@ exports.getExamByCode = async (req, res) => {
   try {
     const userId = req.query.userId;
     const exam = await Exam.findOne({ code: req.params.code }).populate("questions");
-    console.log("userId nhận được:", userId);
-
     if (!exam) {
       return res.status(404).json({ message: "Không tìm thấy bài kiểm tra." });
     }
 
-    // Nếu không có userId hoặc userId không hợp lệ → bỏ qua kiểm tra
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "userId không hợp lệ" });
     }
@@ -126,7 +123,7 @@ exports.getAllExams = async (req, res) => {
     if (!teacherId) {
       return res.status(400).json({ message: "teacherId is required" });
     }
-    
+
     const exams = await Exam.find({ teacherId });  // Lọc theo teacherId
     res.status(200).json(exams);
   } catch (err) {

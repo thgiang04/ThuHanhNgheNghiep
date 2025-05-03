@@ -10,11 +10,11 @@ const {
 } = require("../controller/examController");
 const router = express.Router();
 
-router.post("/exam", createExam); // Tạo đề
-router.post("/exam/:examId/question", addQuestionToExam); // Thêm câu hỏi vào đề
+router.post("/exam", createExam); 
+router.post("/exam/:examId/question", addQuestionToExam); 
 
-router.get("/exam/:examId", getExamById); // Xem đề
-router.get("/exam", getAllExams); // Lấy danh sách đề
+router.get("/exam/:examId", getExamById); 
+router.get("/exam", getAllExams); 
 router.delete("/exam/:examId", deleteExam);
 router.get("/exam/code/:code", getExamByCode);
 

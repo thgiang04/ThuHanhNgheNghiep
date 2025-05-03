@@ -16,6 +16,8 @@ const QuizPage = () => {
   const [score, setScore] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
+  
+  
   const questions = exam?.questions || [];
   const currentQuestion = questions[currentQuestionIndex];
 
