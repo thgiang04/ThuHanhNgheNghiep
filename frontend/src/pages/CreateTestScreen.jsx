@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -9,7 +9,7 @@ import FooterGV from "./FooterGV";
 
 const CreateTestScreen = () => {
   const [title, setTitle] = useState("");
-  const [totalTime, setTotalTime] = useState(60);
+  const [totalTime, setTotalTime] = useState(1);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [questions, setQuestions] = useState([
@@ -21,6 +21,8 @@ const CreateTestScreen = () => {
     },
   ]);
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const teacherId = state?.teacherId;
 
   const handleAddQuestion = () => {
     setQuestions([
@@ -79,26 +81,27 @@ const CreateTestScreen = () => {
         duration: totalTime,
         startTime,
         endTime,
+        teacherId,
       });
 
       const examId = res.data._id;
 
-      // Show progress toast
       const progressToast = toast.loading("Đang tạo bài kiểm tra...", {
         position: "top-center",
       });
 
-      // Process questions sequentially
       for (const [index, q] of questions.entries()) {
         try {
-          await axios.post(`http://localhost:3000/api/exam/${examId}/question`, {
-            content: q.content,
-            options: q.options,
-            correctAnswer: q.correctAnswer,
-            score: q.score,
-          });
-          
-          // Update progress
+          await axios.post(
+            `http://localhost:3000/api/exam/${examId}/question`,
+            {
+              content: q.content,
+              options: q.options,
+              correctAnswer: q.correctAnswer,
+              score: q.score,
+            }
+          );
+
           toast.update(progressToast, {
             render: `Đang tạo câu hỏi ${index + 1}/${questions.length}`,
             type: "default",
@@ -110,7 +113,6 @@ const CreateTestScreen = () => {
         }
       }
 
-      // Final success message
       toast.update(progressToast, {
         render: "Tạo bài kiểm tra thành công!",
         type: "success",
@@ -118,17 +120,13 @@ const CreateTestScreen = () => {
         autoClose: 2000,
       });
 
-      // Navigate after success
-      setTimeout(() => navigate("/exams"), 2000);
+      setTimeout(() => navigate("/exams",  { state: { teacherId } }), 2000);
     } catch (err) {
       console.error(err);
-      toast.error(
-        err.response?.data?.message || "Tạo bài kiểm tra thất bại", 
-        {
-          position: "top-center",
-          autoClose: 2000,
-        }
-      );
+      toast.error(err.response?.data?.message || "Tạo bài kiểm tra thất bại", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -154,7 +152,7 @@ const CreateTestScreen = () => {
                   type="number"
                   min="1"
                   value={totalTime}
-                  onChange={(e) => setTotalTime(parseInt(e.target.value) || 1)}
+                  onChange={(e) => setTotalTime(parseInt(e.target.value))}
                 />
               </label>
             </div>

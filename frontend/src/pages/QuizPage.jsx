@@ -9,6 +9,8 @@ const QuizPage = () => {
   const { state } = useLocation();
   const exam = state?.exam;
 
+  // dang fix
+  const userId = state?.userId
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [score, setScore] = useState(0);
@@ -20,14 +22,15 @@ const QuizPage = () => {
   const hasSubmitted = useRef(false);
 
   const submitExamResults = async () => {
-    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
-    const name = user?.name; // Dùng email thay vì studentId
+    // const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
+    // const name = user?.name; // Dùng email thay vì studentId
 
     try {
       const response = await axios.post(
         `http://localhost:3000/api/exam/${exam._id}/results`,
         {
-          name: name, // Gửi email thay vì studentId
+          // name: name, // Gửi email thay vì studentId
+          userId: userId,
           examId: exam._id,
           score: score,
           timeSpent: elapsedTime,

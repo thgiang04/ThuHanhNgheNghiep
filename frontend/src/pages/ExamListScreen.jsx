@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./ExamListScreen.css";
 import NavbarGV from "./NavbarGV";
@@ -9,10 +9,21 @@ const ExamListScreen = () => {
   const [exams, setExams] = useState([]);
   const navigate = useNavigate();
 
+  const { state } = useLocation();
+  const teacherId = state?.teacherId || state?.userId;
+
+
   useEffect(() => {
+    if (!teacherId) {
+      console.log("Teacher ID không có, không thể tải bài kiểm tra.");
+      return; 
+    }
     const fetchExams = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/exam");
+        const res = await axios.get("http://localhost:3000/api/exam", {
+          params: { teacherId },
+        });
+        console.log(res.data); // Kiểm tra dữ liệu nhận được
         setExams(res.data);
       } catch (err) {
         console.error("Lỗi khi tải danh sách đề:", err);
@@ -20,10 +31,10 @@ const ExamListScreen = () => {
     };
 
     fetchExams();
-  }, []);
+  }, [teacherId]);
 
   const handleCreateTestClick = () => {
-    navigate("/create-test");
+    navigate("/create-test", { state: { teacherId } });
   };
 
   const handleExamClick = (examId) => {
@@ -55,7 +66,7 @@ const ExamListScreen = () => {
               >
                 <strong>{exam.title}</strong>
                 <p>Mã bài kiểm tra: {exam.code}</p>
-                <p>Thời gian: {exam.duration } phút</p>
+                <p>Thời gian: {exam.duration} phút</p>
               </div>
               <button
                 className="delete-button"

@@ -33,9 +33,9 @@ const LoginForm = () => {
         progress: undefined,
         onClose: () => {
           if (role === "teacher") {
-            navigate("/teacher-dashboard");
+            navigate("/teacher-dashboard", { state: { userId: loggedInUser._id } });
           } else if (role === "student") {
-            navigate("/student-dashboard");
+            navigate("/student-dashboard",  { state: { userId: loggedInUser._id } });
           }
         }
       });

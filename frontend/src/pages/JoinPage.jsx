@@ -12,6 +12,10 @@ function JoinPage() {
   const [code, setCode] = useState("");
   const navigate = useNavigate();
 
+  // Lấy userId
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user ? user._id : null;
+
   const handleJoin = async () => {
     if (!code.trim()) {
       toast.error("Vui lòng nhập mã bài kiểm tra", {
@@ -23,16 +27,16 @@ function JoinPage() {
 
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/exam/code/${code}`
+        `http://localhost:3000/api/exam/code/${code}?userId=${userId}`
       );
-      const exam = res.data;
+      
+      
+      const { exam, isCompleted } = res.data;
       const currentTime = new Date().getTime();
       const startTime = new Date(exam.startTime).getTime();
       const endTime = new Date(exam.endTime).getTime();
 
       // Kiểm tra trạng thái đã hoàn thành của bài kiểm tra
-      const isCompleted =
-        localStorage.getItem(`completed_${exam._id}`) === "true";
 
       if (currentTime < startTime) {
         toast.error("Bài kiểm tra chưa mở, bạn không thể tham gia.", {
@@ -51,17 +55,20 @@ function JoinPage() {
       }
 
       if (isCompleted) {
-        toast.error("Bạn đã hoàn thành bài kiểm tra này và không thể tham gia lại.", {
-          position: "top-center",
-          autoClose: 2000,
-        });
+        toast.error(
+          "Bạn đã hoàn thành bài kiểm tra này và không thể tham gia lại.",
+          {
+            position: "top-center",
+            autoClose: 2000,
+          }
+        );
         return;
       }
 
       toast.success("Đang chuyển hướng đến bài kiểm tra...", {
         position: "top-center",
         autoClose: 1000,
-        onClose: () => navigate("/start-page", { state: { exam } }),
+        onClose: () => navigate("/start-page", { state: { exam , userId } }),
       });
     } catch (err) {
       console.error(err);

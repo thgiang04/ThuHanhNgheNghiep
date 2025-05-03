@@ -1,17 +1,15 @@
 const Exam = require("../model/examModel.js");
 const Question = require("../model/questionModel.js");
 const Result = require("../model/resultModel.js"); // Thêm model result
+const User = require("../model/userModel.js"); // 🛠 Thêm dòng này nếu chưa có
+
 
 exports.createExam = async (req, res) => {
   try {
-    const { title, startTime, endTime, duration  } = req.body;
+    const { title, startTime, endTime, duration, teacherId } = req.body;
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    const newExam = new Exam({ title,
-      code,
-      startTime,
-      endTime,
-      duration, });
+    const newExam = new Exam({ title, code, startTime, endTime, duration, teacherId });
     await newExam.save();
 
     res.status(201).json(newExam); // Trả về ID để frontend tạo câu hỏi
@@ -22,11 +20,15 @@ exports.createExam = async (req, res) => {
 
 exports.submitExamResults = async (req, res) => {
   try {
-    const { name, examId, score, timeSpent } = req.body;
+    const {  userId, examId, score, timeSpent } = req.body;
+
+    // Lấy thông tin học sinh từ bảng Users
+    const user = await User.findById(userId);
 
     // Tạo kết quả bài kiểm tra mới
     const newResult = new Result({
-      name: name,  // Gửi email thay vì studentId
+      name: user.name, // Lấy tên từ bảng Users
+      userId, // Lưu ID học sinh
       examId,
       score,
       timeSpent,
@@ -37,10 +39,11 @@ exports.submitExamResults = async (req, res) => {
 
     // Cập nhật lại mảng `results` trong Exam
     const exam = await Exam.findById(examId);
-    exam.results.push(newResult._id);  // Đẩy kết quả vào mảng results của Exam
+    exam.results.push(newResult._id);
+    exam.studentsCompleted.push(userId); // Thêm học sinh vào mảng đã hoàn thành
 
-    // Lưu lại Exam sau khi đã thêm kết quả vào mảng `results`
-    await exam.save();  // Quan trọng: Đảm bảo rằng Exam được lưu lại
+    // Lưu lại Exam sau khi đã thêm kết quả và học sinh vào
+    await exam.save();
 
     res.status(201).json({ message: "Kết quả bài kiểm tra đã được lưu." });
   } catch (err) {
@@ -52,16 +55,30 @@ exports.submitExamResults = async (req, res) => {
 
 exports.getExamByCode = async (req, res) => {
   try {
-    const exam = await Exam.findOne({ code: req.params.code }).populate(
-      "questions"
-    );
-    if (!exam)
+    const userId = req.query.userId;
+    const exam = await Exam.findOne({ code: req.params.code }).populate("questions");
+    console.log("userId nhận được:", userId);
+
+    if (!exam) {
       return res.status(404).json({ message: "Không tìm thấy bài kiểm tra." });
-    res.status(200).json(exam);
+    }
+
+    // Nếu không có userId hoặc userId không hợp lệ → bỏ qua kiểm tra
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "userId không hợp lệ" });
+    }
+
+    const objectUserId = new mongoose.Types.ObjectId(userId);
+
+    const isCompleted = exam.studentsCompleted.some(id => id.equals(objectUserId));
+
+    res.status(200).json({ exam, isCompleted });
   } catch (err) {
+    console.error("Lỗi trong getExamByCode:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 exports.addQuestionToExam = async (req, res) => {
   try {
@@ -91,10 +108,11 @@ exports.addQuestionToExam = async (req, res) => {
   }
 };
 
-// Trong hàm getExamById
 exports.getExamById = async (req, res) => {
   try {
-    const exam = await Exam.findById(req.params.examId).populate("questions").populate("results"); // populate cả "results"
+    const exam = await Exam.findById(req.params.examId)
+      .populate("questions")
+      .populate("results");
     res.status(200).json(exam);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -103,12 +121,19 @@ exports.getExamById = async (req, res) => {
 
 exports.getAllExams = async (req, res) => {
   try {
-    const exams = await Exam.find();
+    const teacherId = req.query.teacherId; 
+
+    if (!teacherId) {
+      return res.status(400).json({ message: "teacherId is required" });
+    }
+    
+    const exams = await Exam.find({ teacherId });  // Lọc theo teacherId
     res.status(200).json(exams);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 exports.deleteExam = async (req, res) => {
   try {
