@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const QuestionSchema = new mongoose.Schema({
-  examId: { type: mongoose.Schema.Types.ObjectId, ref: 'Exam' },
+  examId: { type: mongoose.Schema.Types.ObjectId, ref: "Exam" },
   content: String,
-  options: [String], 
+  options: [String],
   correctAnswer: String,
-  score: Number
+  score: Number,
 });
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model("Question", QuestionSchema);

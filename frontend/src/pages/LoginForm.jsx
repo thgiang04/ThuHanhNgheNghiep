@@ -23,23 +23,31 @@ const LoginForm = () => {
       const role = loggedInUser.role;
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      toast.success(`Đăng nhập thành công với vai trò ${role === "teacher" ? "giáo viên" : "học sinh"}!`, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        onClose: () => {
-          if (role === "teacher") {
-            navigate("/teacher-dashboard", { state: { userId: loggedInUser._id } });
-          } else if (role === "student") {
-            navigate("/student-dashboard",  { state: { userId: loggedInUser._id } });
-          }
+      toast.success(
+        `Đăng nhập thành công với vai trò ${
+          role === "teacher" ? "giáo viên" : "học sinh"
+        }!`,
+        {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          onClose: () => {
+            if (role === "teacher") {
+              navigate("/teacher-dashboard", {
+                state: { userId: loggedInUser._id },
+              });
+            } else if (role === "student") {
+              navigate("/student-dashboard", {
+                state: { userId: loggedInUser._id },
+              });
+            }
+          },
         }
-      });
-
+      );
     } catch (err) {
       toast.error("Sai email hoặc mật khẩu!", {
         position: "top-center",
@@ -55,7 +63,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
+    <div
+      className="login-wrapper"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="login-container">
         <h1 className="login-header">Đăng nhập</h1>
 

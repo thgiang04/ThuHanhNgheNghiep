@@ -9,29 +9,22 @@ const QuizPage = () => {
   const { state } = useLocation();
   const exam = state?.exam;
 
-  // dang fix
-  const userId = state?.userId
+  const userId = state?.userId;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [score, setScore] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  
-  
   const questions = exam?.questions || [];
   const currentQuestion = questions[currentQuestionIndex];
 
   const hasSubmitted = useRef(false);
 
   const submitExamResults = async () => {
-    // const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
-    // const name = user?.name; // Dùng email thay vì studentId
-
     try {
       const response = await axios.post(
         `http://localhost:3000/api/exam/${exam._id}/results`,
         {
-          // name: name, // Gửi email thay vì studentId
           userId: userId,
           examId: exam._id,
           score: score,
@@ -47,7 +40,7 @@ const QuizPage = () => {
   useEffect(() => {
     if (exam && elapsedTime >= exam.duration * 60 && !hasSubmitted.current) {
       hasSubmitted.current = true;
-      submitExamResults(); // Gửi kết quả khi hết thời gian
+      submitExamResults();
       navigate("/result", {
         state: {
           score,
@@ -79,7 +72,7 @@ const QuizPage = () => {
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOptionIndex(null); // reset lựa chọn
+      setSelectedOptionIndex(null);
     } else {
       submitExamResults();
       navigate("/result", {

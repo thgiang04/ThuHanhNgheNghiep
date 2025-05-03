@@ -32,7 +32,7 @@ const ReviewTestScreen = () => {
           <div>
             <strong>{exam.title}</strong>{" "}
             <span className="dim-text">
-              ({new Date(exam.createdAt).toLocaleDateString('en-GB')})
+              ({new Date(exam.createdAt).toLocaleDateString("en-GB")})
             </span>
           </div>
           <div className="test-meta">

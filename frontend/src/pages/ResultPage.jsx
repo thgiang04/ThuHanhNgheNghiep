@@ -27,7 +27,6 @@ const ResultPage = () => {
           <h2 className="sub-title">Bài kiểm tra: {state.title}</h2>
           <p className="test-code">
             {/* chưa thêm vào */}
-            
             Mã bài kiểm tra: <strong> {state.code} </strong>
           </p>
           <div className="congrats">

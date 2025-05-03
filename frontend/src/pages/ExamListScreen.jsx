@@ -12,18 +12,17 @@ const ExamListScreen = () => {
   const { state } = useLocation();
   const teacherId = state?.teacherId || state?.userId;
 
-
   useEffect(() => {
     if (!teacherId) {
       console.log("Teacher ID không có, không thể tải bài kiểm tra.");
-      return; 
+      return;
     }
     const fetchExams = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/exam", {
           params: { teacherId },
         });
-        console.log(res.data); // Kiểm tra dữ liệu nhận được
+        console.log(res.data); 
         setExams(res.data);
       } catch (err) {
         console.error("Lỗi khi tải danh sách đề:", err);

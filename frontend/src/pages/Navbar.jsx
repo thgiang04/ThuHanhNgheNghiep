@@ -1,7 +1,7 @@
 // components/Navbar.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Navbar.css'; // Import the CSS file
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css"; // Import the CSS file
 
 const Navbar = () => {
   return (
@@ -10,14 +10,10 @@ const Navbar = () => {
         <h1 className="navbar-logo">ThinkFast</h1>
         <div className="navbar-buttons">
           <Link to="/login">
-            <button className="login-button">
-              Đăng nhập
-            </button>
+            <button className="login-button">Đăng nhập</button>
           </Link>
           <Link to="/registerpage">
-            <button className="register-button">
-              Đăng Kí
-            </button>
+            <button className="register-button">Đăng Kí</button>
           </Link>
         </div>
       </div>

@@ -14,14 +14,13 @@ const TestResultScreen = () => {
   const { examId } = useParams();
   const [examData, setExamData] = useState(null);
 
-  // Fetch exam data from backend
   useEffect(() => {
     const fetchExamData = async () => {
       try {
         const response = await axios.get(
           `http://localhost:3000/api/exam/${examId}`
         );
-        setExamData(response.data); // Save exam data to state
+        setExamData(response.data);
       } catch (err) {
         console.error("Error fetching exam data:", err);
       }
@@ -34,18 +33,16 @@ const TestResultScreen = () => {
     return <div>Loading...</div>;
   }
 
-  // Get the student results
   const studentResults = examData.results || [];
 
   const formatDate = (date) => {
     const d = new Date(date);
-    const day = d.getDate(); // Lấy ngày
-    const month = d.getMonth() + 1; // Lấy tháng (bắt đầu từ 0, do đó phải cộng thêm 1)
-    const year = d.getFullYear(); // Lấy năm
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
+    const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
-  // Calculate score distribution
   const scoreDistribution = {
     10: studentResults.filter((item) => item.score === 10).length,
     9: studentResults.filter((item) => item.score === 9).length,
@@ -70,7 +67,6 @@ const TestResultScreen = () => {
     percentages[key] = ((value / total) * 100).toFixed(1);
   });
 
-  // Data for the Doughnut chart
   const chartData = {
     labels: filteredScores.map(([key]) => key),
     datasets: [

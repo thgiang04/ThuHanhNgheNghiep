@@ -9,7 +9,7 @@ function StartPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const exam = state?.exam;
-  const userId = state?.userId
+  const userId = state?.userId;
   const handleStartQuiz = () => {
     if (!exam) return alert("Không có thông tin bài kiểm tra.");
     navigate("/quiz", { state: { exam, userId } });

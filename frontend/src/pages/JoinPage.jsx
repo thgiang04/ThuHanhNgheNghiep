@@ -12,7 +12,6 @@ function JoinPage() {
   const [code, setCode] = useState("");
   const navigate = useNavigate();
 
-  // Lấy userId
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user ? user._id : null;
 
@@ -24,7 +23,7 @@ function JoinPage() {
       });
       return;
     }
-    
+
     try {
       console.log(userId);
       const res = await axios.get(
@@ -35,11 +34,11 @@ function JoinPage() {
       const startTime = new Date(exam.startTime).getTime();
       const endTime = new Date(exam.endTime).getTime();
       const duration = exam.duration;
-      // Kiểm tra trạng thái đã hoàn thành của bài kiểm tra
-      const remainingTime = (endTime - currentTime)/60000;
 
-      console.log(remainingTime, duration)
-      
+      const remainingTime = (endTime - currentTime) / 60000;
+
+      console.log(remainingTime, duration);
+
       if (currentTime < startTime) {
         toast.error("Bài kiểm tra chưa mở, bạn không thể tham gia.", {
           position: "top-center",

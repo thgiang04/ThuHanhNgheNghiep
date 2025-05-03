@@ -14,7 +14,6 @@ const ProcessSection = () => {
         <h2 className="process-title">Cách ThinkFast hoạt động</h2>
 
         <div className="process-steps">
-          {/* Step 1 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
@@ -32,7 +31,6 @@ const ProcessSection = () => {
               </div>
             </div>
           </div>
-          {/* Step 2 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
@@ -51,7 +49,6 @@ const ProcessSection = () => {
             </div>
           </div>
 
-          {/* Step 3 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
@@ -70,7 +67,6 @@ const ProcessSection = () => {
             </div>
           </div>
 
-          {/* Step 4 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
@@ -89,7 +85,6 @@ const ProcessSection = () => {
             </div>
           </div>
 
-          {/* Step 5 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">
@@ -108,7 +103,6 @@ const ProcessSection = () => {
             </div>
           </div>
 
-          {/* Step 6 */}
           <div className="process-step">
             <div className="step-content">
               <div className="step-image">

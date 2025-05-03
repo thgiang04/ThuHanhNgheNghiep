@@ -11,7 +11,7 @@ const UserProfile = () => {
   const [showEditInfo, setShowEditInfo] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const navigate = useNavigate();
-  
+
   const [user, setUser] = useState(null);
   const [editUser, setEditUser] = useState({
     name: "",

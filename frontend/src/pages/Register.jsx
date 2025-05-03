@@ -29,7 +29,6 @@ const Register = () => {
 
     const { name, email, password, passwordSecurity } = user;
 
-    // Kiểm tra không để trống
     if (!name || !email || !password || !passwordSecurity) {
       toast.error("Vui lòng điền đầy đủ thông tin.", {
         position: "top-center",
@@ -38,7 +37,6 @@ const Register = () => {
       return;
     }
 
-    // Kiểm tra định dạng email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error("Email không hợp lệ.", {
@@ -48,16 +46,6 @@ const Register = () => {
       return;
     }
 
-    // Kiểm tra độ dài mật khẩu
-    if (password.length < 6) {
-      toast.error("Mật khẩu phải có ít nhất 6 ký tự.", {
-        position: "top-center",
-        autoClose: 2000,
-      });
-      return;
-    }
-
-    // Kiểm tra mật khẩu khớp
     if (password !== passwordSecurity) {
       toast.error("Mật khẩu không khớp. Vui lòng nhập lại.", {
         position: "top-center",
@@ -73,13 +61,15 @@ const Register = () => {
         password: user.password,
         role: user.role,
       });
-      
-      toast.success(`Đăng ký ${role === "teacher" ? "giáo viên" : "học sinh"} thành công!`, {
-        position: "top-center",
-        autoClose: 2000,
-        onClose: () => navigate("/login")
-      });
-      
+
+      toast.success(
+        `Đăng ký ${role === "teacher" ? "giáo viên" : "học sinh"} thành công!`,
+        {
+          position: "top-center",
+          autoClose: 2000,
+          onClose: () => navigate("/login"),
+        }
+      );
     } catch (error) {
       console.log(error);
       toast.error("Đăng ký thất bại. Vui lòng thử lại.", {
@@ -90,7 +80,10 @@ const Register = () => {
   };
 
   return (
-    <div className="login-wrapper" style={{ backgroundImage: `url(${bgImage})` }}>
+    <div
+      className="login-wrapper"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="login-container">
         <h1 className="login-header">
           Đăng ký {role === "teacher" ? "Giáo viên" : "Học sinh"}

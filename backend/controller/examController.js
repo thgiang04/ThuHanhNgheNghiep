@@ -9,7 +9,14 @@ exports.createExam = async (req, res) => {
     const { title, startTime, endTime, duration, teacherId } = req.body;
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    const newExam = new Exam({ title, code, startTime, endTime, duration, teacherId });
+    const newExam = new Exam({
+      title,
+      code,
+      startTime,
+      endTime,
+      duration,
+      teacherId,
+    });
     await newExam.save();
 
     res.status(201).json(newExam); // Trả về ID để frontend tạo câu hỏi
@@ -20,7 +27,7 @@ exports.createExam = async (req, res) => {
 
 exports.submitExamResults = async (req, res) => {
   try {
-    const {  userId, examId, score, timeSpent } = req.body;
+    const { userId, examId, score, timeSpent } = req.body;
 
     // Lấy thông tin học sinh từ bảng Users
     const user = await User.findById(userId);
@@ -51,12 +58,12 @@ exports.submitExamResults = async (req, res) => {
   }
 };
 
-
-
 exports.getExamByCode = async (req, res) => {
   try {
     const userId = req.query.userId;
-    const exam = await Exam.findOne({ code: req.params.code }).populate("questions");
+    const exam = await Exam.findOne({ code: req.params.code }).populate(
+      "questions"
+    );
     if (!exam) {
       return res.status(404).json({ message: "Không tìm thấy bài kiểm tra." });
     }
@@ -67,7 +74,9 @@ exports.getExamByCode = async (req, res) => {
 
     const objectUserId = new mongoose.Types.ObjectId(userId);
 
-    const isCompleted = exam.studentsCompleted.some(id => id.equals(objectUserId));
+    const isCompleted = exam.studentsCompleted.some((id) =>
+      id.equals(objectUserId)
+    );
 
     res.status(200).json({ exam, isCompleted });
   } catch (err) {
@@ -75,7 +84,6 @@ exports.getExamByCode = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.addQuestionToExam = async (req, res) => {
   try {
@@ -118,19 +126,18 @@ exports.getExamById = async (req, res) => {
 
 exports.getAllExams = async (req, res) => {
   try {
-    const teacherId = req.query.teacherId; 
+    const teacherId = req.query.teacherId;
 
     if (!teacherId) {
       return res.status(400).json({ message: "teacherId is required" });
     }
 
-    const exams = await Exam.find({ teacherId });  // Lọc theo teacherId
+    const exams = await Exam.find({ teacherId }); // Lọc theo teacherId
     res.status(200).json(exams);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.deleteExam = async (req, res) => {
   try {

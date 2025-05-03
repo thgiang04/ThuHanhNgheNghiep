@@ -120,7 +120,7 @@ const CreateTestScreen = () => {
         autoClose: 2000,
       });
 
-      setTimeout(() => navigate("/exams",  { state: { teacherId } }), 2000);
+      setTimeout(() => navigate("/exams", { state: { teacherId } }), 2000);
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Tạo bài kiểm tra thất bại", {
