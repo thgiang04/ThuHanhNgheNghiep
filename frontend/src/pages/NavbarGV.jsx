@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./NavbarGV.css";
-import userIcon from "../assets/userGV.png"; // Import icon user
+import userIcon from "../assets/userGV.png"; 
 
 const NavbarGV = () => {
   return (

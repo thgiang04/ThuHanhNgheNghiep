@@ -145,12 +145,10 @@ const TestResultScreen = () => {
 
         <div className="results-section">
           <div className="students-panel">
-            {/* Optional: You can display the student results if needed */}
             {studentResults.map((student, index) => (
               <div className="student-row" key={index}>
                 <div className="student-details">
                   <div className="student-name">{student.name}</div>{" "}
-                  {/* Display student name */}
                   <div className="student-time">
                     Thời gian làm bài:{" "}
                     {Math.round((student.timeSpent / 60) * 10) / 10} phút

@@ -1,5 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./StartPage.css";
 import bgImage from "../assets/bg2.png";
 import Navbar2 from "./Navbar2";
@@ -10,9 +12,20 @@ function StartPage() {
   const { state } = useLocation();
   const exam = state?.exam;
   const userId = state?.userId;
+
   const handleStartQuiz = () => {
-    if (!exam) return alert("Không có thông tin bài kiểm tra.");
-    navigate("/quiz", { state: { exam, userId } });
+    if (!exam) {
+      toast.error("Không có thông tin bài kiểm tra", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      return;
+    }
+    toast.info("Đang bắt đầu bài kiểm tra...", {
+      position: "top-center",
+      autoClose: 1000,
+      onClose: () => navigate("/quiz", { state: { exam, userId } }),
+    });
   };
 
   if (!exam) {
@@ -43,6 +56,17 @@ function StartPage() {
           <div className="timer">🕒 {exam.duration}phút</div>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Footer />
     </>
   );

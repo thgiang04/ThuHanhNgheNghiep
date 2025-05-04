@@ -102,7 +102,6 @@ const LoginForm = () => {
         </Link>
       </div>
 
-      {/* Thêm ToastContainer vào cuối component */}
       <ToastContainer
         position="top-center"
         autoClose={2000}
