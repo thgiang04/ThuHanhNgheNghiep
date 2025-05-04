@@ -1,7 +1,7 @@
 const Exam = require("../model/examModel.js");
 const Question = require("../model/questionModel.js");
-const Result = require("../model/resultModel.js"); // Thêm model result
-const User = require("../model/userModel.js"); // 🛠 Thêm dòng này nếu chưa có
+const Result = require("../model/resultModel.js"); 
+const User = require("../model/userModel.js"); 
 const mongoose = require("mongoose");
 
 exports.createExam = async (req, res) => {
@@ -19,7 +19,7 @@ exports.createExam = async (req, res) => {
     });
     await newExam.save();
 
-    res.status(201).json(newExam); // Trả về ID để frontend tạo câu hỏi
+    res.status(201).json(newExam); 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -29,27 +29,22 @@ exports.submitExamResults = async (req, res) => {
   try {
     const { userId, examId, score, timeSpent } = req.body;
 
-    // Lấy thông tin học sinh từ bảng Users
     const user = await User.findById(userId);
 
-    // Tạo kết quả bài kiểm tra mới
     const newResult = new Result({
-      name: user.name, // Lấy tên từ bảng Users
-      userId, // Lưu ID học sinh
+      name: user.name, 
+      userId, 
       examId,
       score,
       timeSpent,
     });
 
-    // Lưu kết quả vào database
     await newResult.save();
 
-    // Cập nhật lại mảng `results` trong Exam
     const exam = await Exam.findById(examId);
     exam.results.push(newResult._id);
-    exam.studentsCompleted.push(userId); // Thêm học sinh vào mảng đã hoàn thành
+    exam.studentsCompleted.push(userId); 
 
-    // Lưu lại Exam sau khi đã thêm kết quả và học sinh vào
     await exam.save();
 
     res.status(201).json({ message: "Kết quả bài kiểm tra đã được lưu." });
@@ -132,7 +127,7 @@ exports.getAllExams = async (req, res) => {
       return res.status(400).json({ message: "teacherId is required" });
     }
 
-    const exams = await Exam.find({ teacherId }); // Lọc theo teacherId
+    const exams = await Exam.find({ teacherId }); 
     res.status(200).json(exams);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -142,8 +137,8 @@ exports.getAllExams = async (req, res) => {
 exports.deleteExam = async (req, res) => {
   try {
     const { examId } = req.params;
-    await Exam.findByIdAndDelete(examId); // Xoá đề
-    await Question.deleteMany({ examId }); // Xoá câu hỏi thuộc đề
+    await Exam.findByIdAndDelete(examId); 
+    await Question.deleteMany({ examId }); 
 
     res.status(200).json({ message: "Xóa bài kiểm tra thành công." });
   } catch (err) {

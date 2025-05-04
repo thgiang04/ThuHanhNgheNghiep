@@ -38,17 +38,14 @@ const updateUserByEmail = async (req, res) => {
   const updatedData = req.body;
 
   try {
-    const user = await User.findOneAndUpdate(
-      { email },
-      updatedData,
-      { new: true } // Trả về user sau khi đã cập nhật
-    );
+    const user = await User.findOneAndUpdate({ email }, updatedData, {
+      new: true,
+    });
 
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng." });
     }
 
-    // Ẩn mật khẩu khi trả về
     const { password, ...userWithoutPass } = user._doc;
     res.status(200).json(userWithoutPass);
   } catch (err) {
@@ -109,7 +106,6 @@ const resetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
 
   try {
-    // Tìm người dùng theo email
     const user = await User.findOne({ email });
     if (!user) {
       return res
@@ -117,7 +113,6 @@ const resetPassword = async (req, res) => {
         .json({ message: "Không tìm thấy người dùng với email này." });
     }
 
-    // Cập nhật mật khẩu mới
     user.password = newPassword;
     await user.save();
 
