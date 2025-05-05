@@ -151,7 +151,17 @@ const TestResultScreen = () => {
                   <div className="student-name">{student.name}</div>{" "}
                   <div className="student-time">
                     Thời gian làm bài:{" "}
-                    {Math.round((student.timeSpent / 60) * 10) / 10} phút
+                    {(() => {
+                      const timeSpent = student.timeSpent; 
+                      const minutes = Math.floor(timeSpent / 60);
+                      const seconds = timeSpent % 60; 
+
+                      if (minutes > 0) {
+                        return `${minutes} phút ${seconds} giây`;
+                      } else {
+                        return `${seconds} giây`;
+                      }
+                    })()}
                   </div>
                 </div>
                 <div className="score-badge">{student.score}</div>

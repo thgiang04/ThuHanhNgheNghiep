@@ -35,7 +35,7 @@ function JoinPage() {
       const endTime = new Date(exam.endTime).getTime();
       const duration = exam.duration;
 
-      const remainingTime = (endTime - currentTime) / 60000;
+      const remainingTime = (endTime - currentTime + 59000) / 60000 ;
 
       console.log(remainingTime, duration);
 
